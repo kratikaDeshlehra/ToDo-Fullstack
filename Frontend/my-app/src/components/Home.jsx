@@ -1,101 +1,129 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 function Home() {
   const [todos, setTodos] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [newTodo, setNewTodo] = useState("");
 
-  useEffect(() => {
-    const fetchtodos = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get("http://localhost:4001/todo/fetch", {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        console.log(response.data.todos);
-        setTodos(response.data.todos);
-        setError(null);
-      } catch (error) {
-        setError("Failed to fetch todos");
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  const fetchtodos = async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch("http://localhost:4001/todo/fetch", {
+        method: "GET",
+        credentials: "include", // send cookies
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch");
       }
-    };
-    fetchtodos();
-  }, []);
 
-  const todoCreate = async () => {
-    if (!newTodo) return;
-    try {
-      const response = await axios.post(
-        "http://localhost:4001/todo/create",
-        {
-          text: newTodo,
-          completed: false,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(response.data.newTodo);
-      setTodos([...todos, response.data.newTodo]);
-      setNewTodo("");
+      const data = await response.json();
+      console.log(data.todos);
+
+      setTodos(data.todos);
+      setError(null);
     } catch (error) {
-      setError("Failed to create todo");
+      console.error(error);
+      setError("Failed to fetch todos");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const todoStatus = async (id) => {
-    const todo = todos.find((t) => t._id === id);
-    try {
-      const response = await axios.put(
-        `http://localhost:4001/todo/update/${id}`,
-        {
-          ...todo,
-          completed: !todo.completed,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(response.data.todo);
-      setTodos(todos.map((t) => (t._id === id ? response.data.todo : t)));
-    } catch (error) {
-      setError("Failed to find todo status");
+  fetchtodos();
+}, []);
+
+
+ const todoCreate = async () => {
+  if (!newTodo) return;
+
+  try {
+    const response = await fetch("http://localhost:4001/todo/create", {
+      method: "POST",
+      credentials: "include",  
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: newTodo,
+        completed: false,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to create todo");
     }
-  };
+
+    const data = await response.json();
+
+    console.log(data.newTodo);
+    setTodos([...todos, data.newTodo]);
+    setNewTodo("");
+
+  } catch (error) {
+    setError("Failed to create todo");
+    console.error(error);
+  }
+};
+
+
+ const todoStatus = async (id) => {
+  const todo = todos.find((t) => t._id === id);
+
+  try {
+    const response = await fetch(`http://localhost:4001/todo/update/${id}`, {
+      method: "PUT",
+      credentials: "include", // send cookies
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...todo,
+        completed: !todo.completed,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update todo");
+    }
+
+    const data = await response.json();
+
+    console.log(data.todo);
+
+    setTodos(todos.map((t) => (t._id === id ? data.todo : t)));
+
+  } catch (error) {
+    setError("Failed to find todo status");
+    console.error(error);
+  }
+};
+
 
   const todoDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:4001/todo/delete/${id}`, {
-        withCredentials: true,
-      });
-      setTodos(todos.filter((t) => t._id !== id));
-    } catch (error) {
-      setError("Failed to Delete Todo");
-    }
-  };
+  try {
+    const response = await fetch(`http://localhost:4001/todo/delete/${id}`, {
+      method: "DELETE",
+      credentials: "include", // send cookies
+    });
 
-  const navigateTo = useNavigate();
-  const logout = async () => {
-    try {
-      await axios.get("http://localhost:4001/user/logout", {
-        withCredentials: true,
-      });
-      toast.success("User logged out successfully");
-      navigateTo("/login");
-      localStorage.removeItem("jwt");
-    } catch (error) {
-      toast.error("Error logging out");
+    if (!response.ok) {
+      throw new Error("Failed to delete");
     }
-  };
+
+    setTodos(todos.filter((t) => t._id !== id));
+  } catch (error) {
+    setError("Failed to Delete Todo");
+    console.error(error);
+  }
+};
+
 
   const remainingTodos = todos.filter((todo) => !todo.completed).length;
 
@@ -163,7 +191,7 @@ function Home() {
         {remainingTodos} remaining todos
       </p>
       <button
-        onClick={() => logout()}
+        onClick={() => console.log("Logout")}
         className="mt-6 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-800 duration-500 mx-auto block"
       >
         Logout

@@ -6,14 +6,14 @@ function Signup() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  
   const navigateTo = useNavigate();
 
  const handleRegister = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await fetch("http://localhost:4002/user/signup", {
+    const res = await fetch("http://localhost:4001/user/signup", {
       method: "POST",
       credentials: "include",   
       headers: {
