@@ -12,7 +12,7 @@ useEffect(() => {
     try {
       setLoading(true);
 
-      const response = await fetch("http://localhost:4001/todo/fetch", {
+      const response = await fetch("https://kratika-deployed-project.onrender.com/todo/fetch", {
         method: "GET",
         credentials: "include", // send cookies
         headers: {
@@ -42,7 +42,7 @@ useEffect(() => {
 
 
 const logout=async ()=>{
- const res= await fetch("http://localhost:4001/user/logout", {
+ const res= await fetch("https://kratika-deployed-project.onrender.com/user/logout", {
     method: "POST",
     credentials: "include", // send cookies
   });
@@ -62,7 +62,7 @@ const logout=async ()=>{
   if (!newTodo) return;
 
   try {
-    const response = await fetch("http://localhost:4001/todo/create", {
+    const response = await fetch("https://kratika-deployed-project.onrender.com/todo/create", {
       method: "POST",
       credentials: "include",  
       headers: {
@@ -95,7 +95,7 @@ const logout=async ()=>{
   const todo = todos.find((t) => t._id === id);
 
   try {
-    const response = await fetch(`http://localhost:4001/todo/update/${id}`, {
+    const response = await fetch(`https://kratika-deployed-project.onrender.com/todo/update/${id}`, {
       method: "PUT",
       credentials: "include", // send cookies
       headers: {
@@ -126,7 +126,7 @@ const logout=async ()=>{
 
   const todoDelete = async (id) => {
   try {
-    const response = await fetch(`http://localhost:4001/todo/delete/${id}`, {
+    const response = await fetch(`https://kratika-deployed-project.onrender.com/delete/${id}`, {
       method: "DELETE",
       credentials: "include", // send cookies
     });

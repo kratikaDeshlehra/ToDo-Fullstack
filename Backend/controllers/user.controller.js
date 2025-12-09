@@ -25,8 +25,9 @@ export const register = async (req, res) => {
 
      const options = {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
+        secure: true,
+        sameSite: "none",
+         path:"/"
     }
 
     if (newUser) {

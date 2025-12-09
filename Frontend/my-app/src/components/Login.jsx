@@ -11,7 +11,7 @@ function Login() {
   const handleRegister = async (e) => {
   e.preventDefault();
   try {
-    const res = await fetch("http://localhost:4001/user/login", {
+    const res = await fetch("https://kratika-deployed-project.onrender.com/user/login", {
       method: "POST",
       credentials: "include", // sends cookies
       headers: {

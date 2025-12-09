@@ -13,7 +13,7 @@ function Signup() {
   e.preventDefault();
 
   try {
-    const res = await fetch("http://localhost:4001/user/signup", {
+    const res = await fetch("https://kratika-deployed-project.onrender.com/user/signup", {
       method: "POST",
       credentials: "include",   
       headers: {

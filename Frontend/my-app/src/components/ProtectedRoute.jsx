@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch("http://localhost:4001/user/Home", {
+        const res = await fetch("https://kratika-deployed-project.onrender.com/user/Home", {
           method: "GET",
           credentials: "include",
         });
