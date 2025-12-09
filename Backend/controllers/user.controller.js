@@ -1,7 +1,9 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 
-
+export const home = async (req, res) => {
+  return res.status(200).json({ message: `Welcome to the home page, ${req.user.username}` });
+}
 export const register = async (req, res) => {
   try {
     
@@ -60,8 +62,9 @@ export const login = async (req, res) => {
     
      const options = {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
+        secure: true,
+        sameSite:"none",
+        path:"/"
     }
     const accessToken=user.generateAccessToken();
       const refreshToken=user.generateRefreshToken();
@@ -81,11 +84,21 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = (req, res) => {
+export const logout = async (req, res) => {
   try {
-    res.clearCookie("jwt", {
+    req.user.refreshToken = "";
+    await req.user.save({ validateBeforeSave: false });
+    res.clearCookie("accessToken", {
       path: "/",
+      sameSite: "none",
+  secure: true
     });
+    res.clearCookie("refreshToken", {
+      path: "/",
+      sameSite: "none",
+  secure: true
+    });
+    
     res.status(200).json({ message: "User logged out successfully" });
   } catch (error) {
     console.log(error);

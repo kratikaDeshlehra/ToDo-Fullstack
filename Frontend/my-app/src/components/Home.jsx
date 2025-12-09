@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useState ,} from "react";
+import { useNavigate } from "react-router-dom";
 function Home() {
   const [todos, setTodos] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [newTodo, setNewTodo] = useState("");
 
+  const navigateTo=useNavigate();
 useEffect(() => {
   const fetchtodos = async () => {
     try {
@@ -39,6 +40,23 @@ useEffect(() => {
   fetchtodos();
 }, []);
 
+
+const logout=async ()=>{
+ const res= await fetch("http://localhost:4001/user/logout", {
+    method: "POST",
+    credentials: "include", // send cookies
+  });
+
+  if(!res.ok){
+    console.log("Logout failed");
+
+
+  }
+ 
+    navigateTo("/login");
+  
+  
+}
 
  const todoCreate = async () => {
   if (!newTodo) return;
@@ -191,7 +209,7 @@ useEffect(() => {
         {remainingTodos} remaining todos
       </p>
       <button
-        onClick={() => console.log("Logout")}
+        onClick={() => logout()}
         className="mt-6 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-800 duration-500 mx-auto block"
       >
         Logout

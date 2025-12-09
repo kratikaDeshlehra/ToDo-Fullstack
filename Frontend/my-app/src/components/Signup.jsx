@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"
 function Signup() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,7 +34,7 @@ function Signup() {
 
     console.log(data);
 
-    navigateTo("/login");
+    navigateTo("/");
 
     setUserName("");
     setEmail("");
